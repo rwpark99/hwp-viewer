@@ -1,4 +1,6 @@
+//#if AF
 import { fill as afFill, openSettings as afOpen } from './autofill.js';
+//#endif
 import { parseHwp, parseHwpx } from 'kordoc';
 import { marked } from 'marked';
 import { hwpPages, hwpxPages } from './pages.js';
@@ -227,7 +229,9 @@ async function openPdf(file) {
 }
 
 function saveHtml() {
+//#if AF
   if (document.querySelector('#doc .af')) { alert('자동 채우기한 개인정보가 있어 HTML 로 저장할 수 없습니다. 📄 PDF 로 저장하세요.'); return; }
+//#endif
   const css = document.querySelector('style').outerHTML;
   const html = `<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(last)}</title>${css}</head><body class="saved"><header class="bar"><span id="fn">${esc(last)}</span><span id="meta">${esc($('#meta').textContent)}</span></header><div class="wrap"><nav id="toc">${$('#toc').innerHTML}</nav><main><div class="page">${$('#doc').innerHTML}</div></main></div></body></html>`;
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([html], { type: 'text/html' })); a.download = (last || 'doc').replace(/\.[^.]+$/, '') + '.html'; a.click();
@@ -262,7 +266,9 @@ addEventListener('DOMContentLoaded', async () => {
   // one place that decides what "back" means
   const onBack = () => { if (window.__licOpen && window.__licOpen()) { window.__licClose(); return; }
     if (window.__helpOpen && window.__helpOpen()) { window.__helpClose(); return; }
+//#if AF
     { const a = document.getElementById('afdlg'); if (a && !a.hidden) { a.hidden = true; return; } }
+//#endif
     if (dlg) return closeDlg();
     if (isOpen()) return B.classList.remove('tocopen');
     if (!$('#page').hidden) ask('파일을 닫을까요?', '닫기', () => { if (!window.__zip.back()) goHome(); });
@@ -294,10 +300,12 @@ addEventListener('DOMContentLoaded', async () => {
     closeToc(); if (t) setTimeout(() => t.scrollIntoView(), 50);
   };
   window.__hv = { onBack, get cw() { return cw; }, CW };
+//#if AF
   $('#afbtn').onclick = () => {
     if ($('#doc').classList.contains('pdf')) { alert('PDF 파일은 자동 채우기를 할 수 없습니다. HWP·HWPX·Word 파일을 여세요.'); return; }
     afOpen(o => { const r = afFill($('#doc'), o); window.__af = r; if (document.querySelector('#doc .af')) $('#save').hidden = true; alert(r.n ? `${r.n}곳을 채웠습니다. 노란 글씨를 확인·수정한 뒤 📄 PDF 로 저장하세요.` : '채울 칸을 찾지 못했습니다.'); });
   };
+//#endif
   $('#pdfbtn').onclick = () => {
     const ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
     toast(ios ? '인쇄 화면에서 공유 버튼 → "파일에 저장"을 누르세요' : '인쇄 화면에서 프린터를 "PDF로 저장"으로 고르세요', 3500);
@@ -311,7 +319,7 @@ addEventListener('DOMContentLoaded', async () => {
   if (location.protocol.startsWith('http') && 'serviceWorker' in navigator) {
     (function(){var had=!!navigator.serviceWorker.controller,done=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(had&&!done){done=true;location.reload()}})})(),navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(() => {});
     if (location.search.includes('shared=1')) {   // Android share target: SW stashed the file in cache
-      const c = await caches.open('hwpview-share'); const r = await c.match('/shared-file');
+      const c = await caches.open('__PREFIX__-share'); const r = await c.match('/shared-file');
       if (r) { const name = decodeURIComponent(r.headers.get('x-name') || 'shared.hwp'); await c.delete('/shared-file'); openFile(new File([await r.blob()], name)); }
     }
   }

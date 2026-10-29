@@ -1,11 +1,11 @@
-const V = 'hwpview-v28'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
+const V = '__CACHEV__'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))); self.skipWaiting(); });
-self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== 'hwpview-share').map(k => caches.delete(k))))); self.clients.claim(); });
+self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== '__PREFIX__-share').map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method === 'POST' && u.pathname.endsWith('/share')) {
     e.respondWith((async () => { const f = (await e.request.formData()).get('file');
-      if (f) await (await caches.open('hwpview-share')).put('/shared-file', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared.hwp') } }));
+      if (f) await (await caches.open('__PREFIX__-share')).put('/shared-file', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared.hwp') } }));
       return Response.redirect('./?shared=1', 303); })()); return;
   }
   if (u.pathname.endsWith('/version.json')) { e.respondWith(fetch(e.request, { cache: 'no-store' })); return; }

@@ -1,17 +1,27 @@
-# HWP 뷰어
+# HWP 뷰어 / 심뷰 (하나의 코드베이스)
 
-HWP·HWPX·PDF·DOC·DOCX·ZIP 파일을 폰 브라우저에서 바로 여는 웹앱(PWA)입니다.
+휴대폰에서 HWP·HWPX·PDF·Word 문서를 보는 PWA 두 가지를 이 저장소 하나에서 만듭니다.
 
-- 바로 쓰기: https://hwp-viewer.rwpark-hwp.workers.dev/
-- 파일은 기기 안에서만 변환합니다 (서버 전송 없음).
-- PDF 저장, 앱 설치, 공유 메뉴로 열기를 지원합니다.
-- 서식 자동 채우기: 날짜·성명·소속 등을 빈칸에 넣어 줍니다. 입력값은 폰에만 암호화해 저장합니다.
+| 앱 | 설정 | 주소 | 특징 |
+|---|---|---|---|
+| HWP 뷰어 | `apps/hwp-viewer.json` | https://hwp-viewer.rwpark-hwp.workers.dev/ | 자동 채우기 포함 (개인정보는 휴대폰에만 암호화 저장, 서버 전송 없음) |
+| 심뷰 (심평원용) | `apps/simview.json` | https://simview.rwpark-hwp.workers.dev/ | 자동 채우기 코드 자체가 빌드에서 빠짐, 버전 1.0 |
 
 ## 빌드
+
 ```
 npm install
-node build.mjs src/app.js dist/app.js && node pack.mjs && node mkworker.mjs
+node build-all.mjs all          # 둘 다
+node build-all.mjs hwp-viewer   # HWP 뷰어만
+node build-all.mjs simview      # 심뷰만
 ```
 
+결과: `dist/<앱>/` (정적 파일) 과 `dist/<앱>.worker.js` (Cloudflare Worker 한 파일).
+
+## 구조
+- `src/` 공통 소스. `//#if AF … //#endif`, `<!--#if AF-->…<!--#endif-->` 구간은 `autofill: true` 앱에만 들어갑니다.
+- `__NAME__`, `__PREFIX__`, `__CACHEV__` 등 자리표시자는 앱 설정 값으로 바뀝니다.
+- `apps/<앱>/` 아이콘.
+
 ## 라이선스
-MIT (LICENSE). 사용한 오픈소스의 라이선스는 THIRD_PARTY_NOTICES.txt 참고.
+MIT (`LICENSE`). 사용한 오픈소스 목록과 전문은 `src/THIRD_PARTY_NOTICES.txt` (앱 안 "오픈소스 라이선스"에서도 볼 수 있음).

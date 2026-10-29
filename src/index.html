@@ -6,7 +6,7 @@ if(/KAKAOTALK/i.test(ua)){window.__inapp='kakao';var k='kakaotalk://web/openExte
 else if(and&&/; wv\)/.test(ua))window.__inapp='앱';
 window.__and=and;window.__ios=ios;})();</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#1f3a5f"><title>HWP 뷰어</title>
+<meta name="theme-color" content="#1f3a5f"><title>__NAME__</title>
 <!--PWA--><style>
 :root{--fg:#1d1d1f;--mut:#666;--line:#999;--bg:#f4f5f7}
 *{box-sizing:border-box}[hidden]{display:none!important}html{-webkit-text-size-adjust:100%}
@@ -47,15 +47,33 @@ img{max-width:100%;height:auto}
 .hwp-pagebreak{margin:22px 0;border-top:1.5px dashed #9aa4b2;text-align:center;height:0}.hwp-pagebreak span{position:relative;top:-0.8em;background:#fff;padding:0 8px;color:#8a94a3;font-size:9pt}
 @page{size:A4;margin:15mm}
 #doc td.emp,#doc th.emp{height:1.6em}
+<!--#if AF-->
 body:not(.docopen) #afbtn{display:none}
+<!--#endif-->
+<!--#if AF-->
 .af{background:#fff3a0;border-bottom:1px dashed #c90;padding:0 2px;outline:none}
+<!--#endif-->
+<!--#if AF-->
 #afdlg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:60;display:flex;align-items:center;justify-content:center}
+<!--#endif-->
+<!--#if AF-->
 #afdlg .afbox{background:#fff;color:#222;border-radius:12px;padding:16px;width:min(92vw,420px);max-height:90vh;overflow:auto;font-size:15px}
+<!--#endif-->
+<!--#if AF-->
 #afdlg label{display:block;margin:8px 0;font-size:14px}#afdlg input{display:block;width:100%;box-sizing:border-box;font-size:16px;padding:8px;margin-top:3px;border:1px solid #bbb;border-radius:6px}
+<!--#endif-->
+<!--#if AF-->
 #afdlg .afkeep{float:right;font-size:13px;color:#1a5fd0}#afdlg .afkeep input{display:inline;width:auto;margin:0 4px 0 0}#afdlg .aferr{color:#c00;font-size:14px;min-height:1em}
+<!--#endif-->
+<!--#if AF-->
 #afdlg .afintro{font-size:11pt;line-height:1.55;background:#fff8dc;border:1px solid #ecd27a;padding:8px 10px;border-radius:6px;margin:0 0 8px}
+<!--#endif-->
+<!--#if AF-->
 #afdlg .afnote{font-size:13px;color:#555;background:#eef6ff;padding:8px;border-radius:6px}
+<!--#endif-->
+<!--#if AF-->
 #afdlg .afbtns{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}#afdlg .afbtns button{font-size:15px;padding:8px 14px}#afgo{background:#1a5fd0;color:#fff;border:0;border-radius:6px}
+<!--#endif-->
 #save{display:inline-flex;align-items:center;justify-content:center;padding-top:3px;padding-bottom:3px}
 #doc.word p{white-space:normal}#doc.docx span{white-space:pre-wrap}
 #doc.docx section.docx{padding:0!important;margin:0!important;width:auto!important;min-height:0!important;box-shadow:none!important;background:none!important}
@@ -75,7 +93,9 @@ body:not(.docopen) #afbtn{display:none}
 @media (display-mode: standalone){#helpbtn{display:none}}
 @media print{#helpdlg,#helpbtn{display:none!important}}
 @media print{.wordnote{display:none}}
+<!--#if AF-->
 @media print{#afdlg{display:none!important}.af{background:none!important;border:0!important;padding:0}}
+<!--#endif-->
 @media print{html,body{background:#fff!important;font-size:10.5pt!important}.bar,nav#toc,#tocbd,#bstack,#dlg,#ib,#upd,#status,#welcome{display:none!important}
 .wrap{display:block!important}main{padding:0!important}.page{box-shadow:none!important;padding:0!important;margin:0!important;max-width:none!important}
 .tw{overflow:visible!important}table{font-size:10pt!important;width:100%!important;min-width:0!important}th,td{border:1px solid #666!important}thead{display:table-header-group}tr,img,.banner{break-inside:avoid;page-break-inside:avoid}
@@ -88,13 +108,13 @@ h1,h2,h3,h4,.banner,.ptitle{break-after:avoid;page-break-after:avoid}img{max-wid
 </style></head><body>
 <header class="bar"><button id="tocbtn" aria-label="목차" hidden>☰ 목차</button><span id="fn">HWP·HWPX·PDF 뷰어</span>
 <label>📂 열기<input type="file" id="pick" accept=".hwp,.hwpx,.pdf,.zip,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/zip,application/x-zip-compressed,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/vnd.hancom.hwpx,application/hwp+zip,application/vnd.hancom.hwpx+zip"></label>
-<button id="helpbtn" title="설치 방법" aria-label="설치 방법">❓ 설치 방법</button><button id="afbtn">✍ 채우기</button><button id="pdfbtn" hidden>📄 PDF</button><button id="save" title="HTML로 저장" aria-label="HTML로 저장"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" style="display:block"><path d="M2 3a1 1 0 0 1 1-1h16l5 5v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" fill="#3b6fd4" stroke="#1d3f86"/><rect x="7" y="2.5" width="10" height="6" rx=".6" fill="#dfe8f7"/><rect x="13.5" y="3.5" width="2" height="4" fill="#3b6fd4"/><rect x="4" y="12" width="18" height="10" rx="1" fill="#fff"/><text x="13" y="20" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="7.4" fill="#1d3f86">HTML</text></svg></button><button id="print">🖨</button><span id="meta">기기 안에서만 변환합니다 (서버 전송 없음) · __APPV__</span></header>
-<div id="welcome"><b>HWP·HWPX·PDF 뷰어</b><p>Word(DOC·DOCX)와 ZIP으로 압축된 파일도 열 수 있어요.<br>파일은 이 기기 밖으로 나가지 않습니다.</p><label class="big">📂 파일 선택<input type="file" style="display:none" onchange="this.files[0]&&hwpviewOpen(this.files[0])" accept=".hwp,.hwpx,.pdf,.zip,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/zip,application/x-zip-compressed,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/vnd.hancom.hwpx,application/hwp+zip,application/vnd.hancom.hwpx+zip"></label><p style="font-size:9pt;color:#666">버전 __APPV__</p><p style="font-size:9pt;color:#666">공유 메뉴에서 'HWP 뷰어'로 보내기도 가능 (설치 시)</p><p><button id="helplink" class="helplink">❓ 설치 방법</button></p><p style="font-size:10pt"><button id="liclink" class="helplink" style="font-size:10pt">오픈소스 라이선스</button></p></div>
+<button id="helpbtn" title="설치 방법" aria-label="설치 방법">❓ 설치 방법</button><!--#if AF--><button id="afbtn">✍ 채우기</button><!--#endif--><button id="pdfbtn" hidden>📄 PDF</button><button id="save" title="HTML로 저장" aria-label="HTML로 저장"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true" style="display:block"><path d="M2 3a1 1 0 0 1 1-1h16l5 5v16a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1z" fill="#3b6fd4" stroke="#1d3f86"/><rect x="7" y="2.5" width="10" height="6" rx=".6" fill="#dfe8f7"/><rect x="13.5" y="3.5" width="2" height="4" fill="#3b6fd4"/><rect x="4" y="12" width="18" height="10" rx="1" fill="#fff"/><text x="13" y="20" text-anchor="middle" font-family="Arial,sans-serif" font-weight="700" font-size="7.4" fill="#1d3f86">HTML</text></svg></button><button id="print">🖨</button><span id="meta">기기 안에서만 변환합니다 (서버 전송 없음) · __APPV__</span></header>
+<div id="welcome">__WELCOME__<p>Word(DOC·DOCX)와 ZIP으로 압축된 파일도 열 수 있어요.<br>파일은 이 기기 밖으로 나가지 않습니다.</p><label class="big">📂 파일 선택<input type="file" style="display:none" onchange="this.files[0]&&hwpviewOpen(this.files[0])" accept=".hwp,.hwpx,.pdf,.zip,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/pdf,application/zip,application/x-zip-compressed,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/vnd.hancom.hwpx,application/hwp+zip,application/vnd.hancom.hwpx+zip"></label><p style="font-size:9pt;color:#666">버전 __APPV__</p><p style="font-size:9pt;color:#666">공유 메뉴에서 '__NAME__'로 보내기도 가능 (설치 시)</p><p><button id="helplink" class="helplink">❓ 설치 방법</button></p><p style="font-size:10pt"><button id="liclink" class="helplink" style="font-size:10pt">오픈소스 라이선스</button></p></div>
 <div class="wrap" id="page" hidden><nav id="toc"></nav><main><div class="page" id="doc"></div></main></div>
 <div id="tocbd"></div><style>#dlg{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;padding:20px}#dlg .box{background:#fff;border-radius:14px;padding:22px 18px 16px;width:100%;max-width:340px;font-size:12pt;text-align:center;box-shadow:0 6px 24px rgba(0,0,0,.3)}#dlg p{margin:4px 0 18px;font-weight:700}#dlg .btns{display:flex;gap:10px}#dlg button{flex:1;padding:13px 0;border:0;border-radius:10px;font:inherit;font-size:12pt;font-weight:700}#dlg .cancel{background:#e6e8ec;color:#222}#dlg .ok{background:#1f3a5f;color:#fff}</style><div id="bstack"><div id="status" hidden></div><div id="ib" hidden></div></div><style>#upd{align-self:stretch;background:#fff8e1;border:2px solid #c78a00;border-radius:12px;padding:12px 14px;font-size:11pt;line-height:1.5}#upd button{margin-top:8px;background:#1f3a5f;color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;font-weight:700}</style>
 <style>#ib{position:relative;align-self:stretch;background:#fff;border:2px solid #1f3a5f;border-radius:12px;padding:12px 40px 12px 14px;font-size:11pt;line-height:1.5;box-shadow:0 4px 16px rgba(0,0,0,.25)}#ib b{color:#1f3a5f}#ib .x{position:absolute;top:6px;right:8px;background:none;border:0;font-size:16pt;color:#666;cursor:pointer}#ib .go{display:inline-block;margin-top:8px;background:#1f3a5f;color:#fff;border:0;border-radius:8px;padding:9px 16px;font:inherit;font-weight:700;cursor:pointer}#ib svg{vertical-align:-5px}</style>
 
-<script>(function(){var b=document.getElementById('ib'),ua=navigator.userAgent,KEY='hwpview-install-dismissed';
+<script>(function(){var b=document.getElementById('ib'),ua=navigator.userAgent,KEY='__PREFIX__-install-dismissed';
 var SH='<svg width="22" height="26" viewBox="0 0 22 26" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v14M6 7l5-5 5 5"/><path d="M7 11H4v13h14V11h-3"/></svg>';
 function show(html,dis){b.innerHTML=(dis?'<button class="x" aria-label="닫기">×</button>':'')+html;b.hidden=false;var x=b.querySelector('.x');if(x)x.onclick=function(){b.hidden=true;try{localStorage.setItem(KEY,'1')}catch(e){}};}
 var ia=window.__inapp;
@@ -106,18 +126,18 @@ if(sa||dis)return;
 if(window.__ios){if(/CriOS/.test(ua))show('<b>홈 화면에 추가하기</b><br>주소창 오른쪽 '+SH+' <b>공유</b> 버튼 → <b>\'홈 화면에 추가\'</b>를 누르세요.<br>메뉴에 없으면 이 링크를 <b>사파리</b>에서 열어 주세요.',true);
  else if(!/FxiOS|EdgiOS/.test(ua))show('<b>앱처럼 설치하기</b><br>아래쪽 '+SH+' <b>공유</b> 버튼 → <b>\'홈 화면에 추가\'</b>를 누르세요.',true);return;}
 var fired=false;setTimeout(function(){if(!fired&&b.hidden)show('<b>홈 화면에 앱으로 추가하기</b><br>Chrome 오른쪽 위 <b>⋮ 메뉴</b> → <b>\'홈 화면에 추가\'</b>(또는 <b>\'앱 설치\'</b>)를 누르세요.',true)},1500);
-window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();fired=true;var p=e;show('<b>HWP 뷰어를 앱으로 설치할 수 있어요.</b><br><button class="go" id="inst">앱 설치</button>',true);document.getElementById('inst').onclick=function(){p.prompt();p.userChoice.then(function(){b.hidden=true})};});
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();fired=true;var p=e;show('<b>__NAME__를 앱으로 설치할 수 있어요.</b><br><button class="go" id="inst">앱 설치</button>',true);document.getElementById('inst').onclick=function(){p.prompt();p.userChoice.then(function(){b.hidden=true})};});
 window.addEventListener('appinstalled',function(){b.hidden=true});})();</script>
-<script>(function(){var CUR='__APPV__',K='hwpview-upd-tried';
+<script>(function(){var CUR='__APPV__',K='__PREFIX__-upd-tried';
 function bar(html){var d=document.getElementById('upd');if(!d){d=document.createElement('div');d.id='upd';document.getElementById('bstack').prepend(d);}d.innerHTML=html;return d;}
 async function refresh(sv){try{sessionStorage.setItem(K,sv)}catch(e){}
  try{var r=await navigator.serviceWorker.getRegistration();if(r){await r.update();if(r.waiting)r.waiting.postMessage('skip');}}catch(e){}
- try{var ks=await caches.keys();await Promise.all(ks.filter(function(k){return k!=='hwpview-share'}).map(function(k){return caches.delete(k)}));}catch(e){}
+ try{var ks=await caches.keys();await Promise.all(ks.filter(function(k){return k!=='__PREFIX__-share'}).map(function(k){return caches.delete(k)}));}catch(e){}
  location.reload();}
 async function check(){var sv;try{sv=(await (await fetch('version.json?t='+Date.now(),{cache:'no-store'})).json()).version}catch(e){return}
  if(!sv||sv===CUR){try{sessionStorage.removeItem(K)}catch(e){}var o=document.getElementById('upd');if(o)o.remove();return;}
  var tried=null;try{tried=sessionStorage.getItem(K)}catch(e){}
- if(tried===sv){bar('<b>새 버전('+sv+')으로 바뀌지 않았어요.</b><br>홈 화면의 HWP 뷰어 아이콘을 길게 눌러 삭제한 뒤, 링크를 다시 열어 설치해 주세요. (지금 '+CUR+')<br><button>다시 시도</button>').querySelector('button').onclick=function(){try{sessionStorage.removeItem(K)}catch(e){}refresh(sv)};}
+ if(tried===sv){bar('<b>새 버전('+sv+')으로 바뀌지 않았어요.</b><br>홈 화면의 __NAME__ 아이콘을 길게 눌러 삭제한 뒤, 링크를 다시 열어 설치해 주세요. (지금 '+CUR+')<br><button>다시 시도</button>').querySelector('button').onclick=function(){try{sessionStorage.removeItem(K)}catch(e){}refresh(sv)};}
  else bar('<b>새 버전('+sv+')이 있어요.</b> (지금 '+CUR+')<br><button>새로고침</button>').querySelector('button').onclick=function(){refresh(sv)};}
 window.hwpviewCheckUpdate=check;check();document.addEventListener('visibilitychange',function(){if(!document.hidden)check()});})();</script>
 <!--SCRIPT-->
@@ -128,7 +148,7 @@ function c(){d.hidden=true}
 document.getElementById('liclink').onclick=o;document.getElementById('licclose').onclick=c;
 window.__licOpen=function(){return !d.hidden};window.__licClose=c;})();</script>
 <div id="helpdlg" hidden role="dialog" aria-modal="true" aria-labelledby="helpttl"><div class="hbox">
-<h3 id="helpttl">HWP 뷰어 설치 방법</h3>
+<h3 id="helpttl">__NAME__ 설치 방법</h3>
 <h4>【안드로이드】</h4>
 <p>▶ 크롬: 오른쪽 위 ⋮ 메뉴에서 "설치 및 바로가기 만들기" 선택 (또는 "홈 화면에 추가"/"앱 설치")</p>
 <p>▶ 삼성 인터넷: 아래쪽 ≡ 메뉴에서 "현재 페이지 추가"를 누르고 "홈 화면" 선택</p>

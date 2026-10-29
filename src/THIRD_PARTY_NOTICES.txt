@@ -1,4 +1,4 @@
-HWP 뷰어 (hwp-viewer) — Third-party software notices
+__NOTICES_TITLE__ — Third-party software notices
 
 This app bundles the following open-source software. Each is used under the license shown; full texts follow.
 jszip is dual-licensed (MIT or GPL-3.0-or-later); it is used here under the MIT license.
