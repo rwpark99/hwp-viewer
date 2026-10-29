@@ -260,7 +260,8 @@ addEventListener('DOMContentLoaded', async () => {
     dlg.onclick = e => { if (e.target === dlg) closeDlg(); };
   };
   // one place that decides what "back" means
-  const onBack = () => { if (window.__helpOpen && window.__helpOpen()) { window.__helpClose(); return; }
+  const onBack = () => { if (window.__licOpen && window.__licOpen()) { window.__licClose(); return; }
+    if (window.__helpOpen && window.__helpOpen()) { window.__helpClose(); return; }
     { const a = document.getElementById('afdlg'); if (a && !a.hidden) { a.hidden = true; return; } }
     if (dlg) return closeDlg();
     if (isOpen()) return B.classList.remove('tocopen');
