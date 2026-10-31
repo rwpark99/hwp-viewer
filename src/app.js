@@ -4,6 +4,7 @@ import { fill as afFill, openSettings as afOpen } from './autofill.js';
 import { parseHwp, parseHwpx } from 'kordoc';
 import { marked } from 'marked';
 import { hwpPages, hwpxPages } from './pages.js';
+import { IMG_RE, isImage, showImages, savePdf } from './images.js';
 import { isDocCfb, docHtml, renderDocx } from './wordfmt.js';
 import JSZip from '../../kordoc/node_modules/jszip/dist/jszip.min.js';
 const $ = s => document.querySelector(s);
@@ -77,7 +78,7 @@ function applyPages(info) {
 }
 const decName = b => { try { return new TextDecoder('utf-8', { fatal: true }).decode(b); } catch (e) { try { return new TextDecoder('euc-kr').decode(b); } catch (e2) { return new TextDecoder().decode(b); } } };
 const fmtSize = n => n < 1024 ? n + ' B' : n < 1048576 ? (n / 1024).toFixed(0) + ' KB' : (n / 1048576).toFixed(1) + ' MB';
-const SUP = /\.(hwp|hwpx|pdf|docx?)$/i;
+const SUP = /\.(hwp|hwpx|pdf|docx?|jpe?g|png|webp|gif|bmp|heic|heif|avif)$/i;
 let zipStack = [], fromZip = false;   // stack of {name, items:[{path,name,size,entry}]}
 async function openZip(file, nested) {
   const st = $('#status'); st.textContent = 'ZIP 여는 중… ' + file.name; st.hidden = false;
@@ -87,7 +88,7 @@ async function openZip(file, nested) {
   z.forEach((p, e) => { if (e.dir || /(^|\/)(__MACOSX|\.)/.test(p)) return; const nm = p.split('/').pop();
     if (SUP.test(nm) || (!nested && /\.zip$/i.test(nm))) items.push({ path: p, name: nm, size: e._data && e._data.uncompressedSize || 0, entry: e }); });
   st.hidden = true;
-  if (!items.length) { st.textContent = 'ZIP 안에 열 수 있는 파일(HWP·HWPX·PDF)이 없어요.'; st.hidden = false; setTimeout(() => st.hidden = true, 3500); return; }
+  if (!items.length) { st.textContent = 'ZIP 안에 열 수 있는 파일(HWP·HWPX·PDF·Word·그림)이 없어요.'; st.hidden = false; setTimeout(() => st.hidden = true, 3500); return; }
   if (!nested) zipStack = [];
   zipStack.push({ name: file.name, items });
   if (items.length === 1 && !/\.zip$/i.test(items[0].name)) { zipStack[zipStack.length - 1].auto = true; return openZipItem(0); }
@@ -97,22 +98,23 @@ function showZipList() {
   $('#pdfbtn').hidden = true;
   const z = zipStack[zipStack.length - 1]; fromZip = false;
   if (window.__pdfReset) window.__pdfReset();
-  $('#doc').classList.remove('pdf');
+  $('#doc').classList.remove('pdf', 'imgs');
   $('#doc').innerHTML = '<h2 class="ziph">🗜 ' + esc(z.name) + '</h2><p class="zipn">열 수 있는 파일 ' + z.items.length + '개 · 눌러서 열기</p><ul class="ziplist">' +
     z.items.map((it, i) => { const dir = it.path.slice(0, it.path.length - it.name.length);
-      const ic = /\.pdf$/i.test(it.name) ? '📕' : /\.zip$/i.test(it.name) ? '🗜' : '📄';
-      return '<li><button data-i="' + i + '"><span class="zi">' + ic + '</span><span class="zt"><b>' + esc(it.name) + '</b>' + (dir ? '<small>' + esc(dir) + '</small>' : '') + '</span><span class="zs">' + fmtSize(it.size) + '</span></button></li>'; }).join('') + '</ul>';
+      const ic = IMG_RE.test(it.name) ? '🖼' : /\.pdf$/i.test(it.name) ? '📕' : /\.zip$/i.test(it.name) ? '🗜' : '📄';
+      return '<li><button data-i="' + i + '"><span class="zi">' + ic + '</span><span class="zt"><b>' + esc(it.name) + '</b>' + (dir ? '<small>' + esc(dir) + '</small>' : '') + '</span><span class="zs">' + fmtSize(it.size) + '</span></button></li>'; }).join('') + '</ul>' + (z.items.filter(it => IMG_RE.test(it.name)).length > 1 ? '<p><button id="zipimgs" class="imgpdf">🖼 그림 ' + z.items.filter(it => IMG_RE.test(it.name)).length + '개 모두 보기 · PDF로 저장</button></p>' : '');
   $('#toc').innerHTML = ''; $('#tocbtn').hidden = true;
   $('#welcome').hidden = true; $('#page').hidden = false; document.body.classList.add('docopen');
   $('#fn').textContent = z.name; $('#meta').textContent = 'ZIP · 파일 ' + z.items.length + '개'; document.title = z.name; window.scrollTo(0, 0);
   $('#doc').querySelectorAll('.ziplist button').forEach(b => b.onclick = () => openZipItem(+b.dataset.i));
+  const zb = $('#zipimgs'); if (zb) zb.onclick = async () => { const fs = []; for (const it of z.items.filter(it => IMG_RE.test(it.name))) fs.push(new File([await it.entry.async('blob')], it.name)); fromZip = true; openImages(fs, true); };
 }
 async function openZipItem(i) {
   const it = zipStack[zipStack.length - 1].items[i];
   const st = $('#status'); st.textContent = '압축 푸는 중… ' + it.name; st.hidden = false;
   const blob = await it.entry.async('blob'); const f = new File([blob], it.name);
   if (/\.zip$/i.test(it.name)) return openZip(f, true);
-  fromZip = true; return openFile(f, true);
+  fromZip = true; if (IMG_RE.test(it.name)) return openImages([f], true); return openFile(f, true);
 }
 window.__zip = { get stack() { return zipStack; }, get fromZip() { return fromZip; }, showZipList, back() {
   const top = zipStack[zipStack.length - 1];
@@ -140,12 +142,32 @@ async function detectKind(file) {
   return null;
 }
 window.hwpviewDetect = detectKind;
+function uiToast(m, ms) { const st = $('#status'); st.textContent = m; st.hidden = false; setTimeout(() => st.hidden = true, ms || 2500); }
+async function openImages(files, inZip) {
+  if (!inZip) { zipStack = []; fromZip = false; }
+  if (window.__pdfReset) window.__pdfReset(); $('#pdfbtn').hidden = true; $('#save').hidden = true;
+  $('#toc').innerHTML = ''; $('#tocbtn').hidden = true;
+  $('#welcome').hidden = true; $('#page').hidden = false; document.body.classList.add('docopen');
+  const nm = files.length === 1 ? files[0].name : '그림 ' + files.length + '개';
+  $('#fn').textContent = nm; $('#meta').textContent = '그림 · 기기 안에서만 처리 (서버 전송 없음)'; document.title = nm; last = nm; window.scrollTo(0, 0);
+  const r = await showImages(files, { $, toast: uiToast }); window.__img = r; return r;
+}
+// several files at once: images → one gallery (selection order); otherwise open the first file
+async function openFiles(list) {
+  const fs = [...list]; if (!fs.length) return;
+  if (fs.length === 1) return openFile(fs[0]);
+  const imgs = []; for (const f of fs) if (await isImage(f)) imgs.push(f);
+  if (imgs.length) { if (imgs.length < fs.length) uiToast('그림이 아닌 파일 ' + (fs.length - imgs.length) + '개는 빼고 열었어요', 3000); window.__imgFiles = imgs; return openImages(imgs); }
+  uiToast('여러 파일은 그림만 한꺼번에 열 수 있어요. 첫 파일을 엽니다.', 3000); return openFile(fs[0]);
+}
+window.hwpviewOpenMany = openFiles;
 async function openFile(file, inZip) {
   if (!inZip) { zipStack = []; fromZip = false; }
+  if (await isImage(file)) { window.__imgFiles = [file]; return openImages([file], inZip); }
   const kind = await detectKind(file);
   if (kind === 'zip') return openZip(file);
   if (kind === 'pdf') return openPdf(file);
-  if (!kind) { const st = $('#status'); st.textContent = '열 수 없는 파일이에요. HWP·HWPX·PDF·DOC·DOCX·ZIP 파일만 열 수 있어요.'; st.hidden = false; setTimeout(() => st.hidden = true, 3500); return; }
+  if (!kind) { const st = $('#status'); st.textContent = '열 수 없는 파일이에요. HWP·HWPX·PDF·DOC·DOCX·ZIP·그림(JPG·PNG 등) 파일만 열 수 있어요.'; st.hidden = false; setTimeout(() => st.hidden = true, 3500); return; }
   $('#status').textContent = '변환 중… ' + file.name; $('#status').hidden = false;
   try {
     const t0 = performance.now();
@@ -155,7 +177,7 @@ async function openFile(file, inZip) {
     const now = new Intl.DateTimeFormat('ko-KR', { timeZone: 'Asia/Seoul', dateStyle: 'long', timeStyle: 'short', hour12: false }).format(new Date());
     $('#fn').textContent = file.name; $('#meta').textContent = `변환: ${now} (KST) · 기기 내 변환 ${Math.round(performance.now() - t0)}ms`;
     if (pdfObs) { pdfObs.disconnect(); pdfObs = null; } $('#doc').classList.remove('pdf');
-    $('#doc').classList.toggle('word', word); $('#doc').classList.toggle('docx', kind === 'docx');
+    $('#doc').classList.remove('imgs'); $('#doc').classList.toggle('word', word); $('#doc').classList.toggle('docx', kind === 'docx');
     if (kind === 'docx') await renderDocx(buf, $('#doc'));
     else if (kind === 'doc') $('#doc').innerHTML = '<p class="wordnote">ⓘ 예전 Word(.doc) 문서는 글자·표 위주로 보여 줍니다. 서식·그림은 원본과 다를 수 있어요.</p>' + docHtml(new Uint8Array(buf));
     else $('#doc').innerHTML = body;
@@ -181,7 +203,7 @@ async function openPdf(file) {
     if (pdfObs) pdfObs.disconnect(); if (pdfDoc) pdfDoc.destroy();
     pdfDoc = await pdfjs.getDocument({ data: new Uint8Array(await file.arrayBuffer()), isEvalSupported: false }).promise;
     const doc = pdfDoc, n = doc.numPages, holder = $('#doc');
-    holder.innerHTML = ''; holder.classList.add('pdf');
+    holder.innerHTML = ''; holder.classList.remove('imgs', 'word', 'docx'); holder.classList.add('pdf');
     $('#welcome').hidden = true; $('#page').hidden = false;   // must be visible to measure width
     const W = holder.clientWidth || innerWidth;
     const first = await doc.getPage(1), v1 = first.getViewport({ scale: 1 });
@@ -238,7 +260,7 @@ function saveHtml() {
 }
 
 addEventListener('DOMContentLoaded', async () => {
-  $('#pick').onchange = e => e.target.files[0] && openFile(e.target.files[0]);
+  $('#pick').onchange = e => e.target.files.length && openFiles(e.target.files);
   const B = document.body, isOpen = () => B.classList.contains('tocopen');
   let dlg = null, exiting = false;
   const CW = typeof window.CloseWatcher === 'function';
@@ -315,13 +337,15 @@ addEventListener('DOMContentLoaded', async () => {
   };
   $('#save').onclick = saveHtml; $('#print').onclick = () => print();
   document.addEventListener('dragover', e => e.preventDefault());
-  document.addEventListener('drop', e => { e.preventDefault(); e.dataTransfer.files[0] && openFile(e.dataTransfer.files[0]); });
+  document.addEventListener('drop', e => { e.preventDefault(); e.dataTransfer.files.length && openFiles(e.dataTransfer.files); });
   if (location.protocol.startsWith('http') && 'serviceWorker' in navigator) {
     (function(){var had=!!navigator.serviceWorker.controller,done=false;navigator.serviceWorker.addEventListener('controllerchange',function(){if(had&&!done){done=true;location.reload()}})})(),navigator.serviceWorker.register('sw.js',{updateViaCache:'none'}).then(function(r){r.update()}).catch(() => {});
     if (location.search.includes('shared=1')) {   // Android share target: SW stashed the file in cache
-      const c = await caches.open('__PREFIX__-share'); const r = await c.match('/shared-file');
-      if (r) { const name = decodeURIComponent(r.headers.get('x-name') || 'shared.hwp'); await c.delete('/shared-file'); openFile(new File([await r.blob()], name)); }
+      const c = await caches.open('__PREFIX__-share'); const got = [];
+      for (let i = 0; i < 50; i++) { const k = i ? '/shared-file-' + i : '/shared-file'; const r = await c.match(k); if (!r) break;
+        got.push(new File([await r.blob()], decodeURIComponent(r.headers.get('x-name') || 'shared.hwp'), { type: r.headers.get('x-type') || '' })); await c.delete(k); }
+      if (got.length) openFiles(got);
     }
   }
-  if ('launchQueue' in window) launchQueue.setConsumer(async p => { if (p.files && p.files[0]) openFile(await p.files[0].getFile()); });
+  if ('launchQueue' in window) launchQueue.setConsumer(async p => { if (p.files && p.files.length) openFiles(await Promise.all([...p.files].map(h => h.getFile()))); });
 });

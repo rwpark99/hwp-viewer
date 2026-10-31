@@ -1,11 +1,11 @@
-const V = 'simview-v1.1.0'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
+const V = 'simview-v1.2.0'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== 'simview-share').map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {
   const u = new URL(e.request.url);
   if (e.request.method === 'POST' && u.pathname.endsWith('/share')) {
-    e.respondWith((async () => { const f = (await e.request.formData()).get('file');
-      if (f) await (await caches.open('simview-share')).put('/shared-file', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared.hwp') } }));
+    e.respondWith((async () => { const fs = (await e.request.formData()).getAll('file'), c = await caches.open('simview-share');
+      for (let i = 0; i < fs.length && i < 50; i++) { const f = fs[i]; await c.put(i ? '/shared-file-' + i : '/shared-file', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared.hwp'), 'x-type': f.type || '' } })); }
       return Response.redirect('./?shared=1', 303); })()); return;
   }
   if (u.pathname.endsWith('/version.json')) { e.respondWith(fetch(e.request, { cache: 'no-store' })); return; }

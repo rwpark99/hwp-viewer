@@ -10,8 +10,8 @@
   "welcome": "<b>심뷰</b><br>HWP·HWPX·PDF 뷰어",
   "icons": "apps/simview",
   "worker": "simview",
-  "version": "1.1",
-  "cache": "simview-v1.1.0",
+  "version": "1.2",
+  "cache": "simview-v1.2.0",
   "prefix": "simview",
   "notices_title": "심뷰 (SimView)",
   "autofill": false

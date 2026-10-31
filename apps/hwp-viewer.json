@@ -2,12 +2,15 @@
   "app": "hwp-viewer",
   "name": "HWP·HWPX·PDF 뷰어",
   "short_name": "HWP 뷰어",
-  "manifest": { "start_url": "./", "scope": "./" },
+  "manifest": {
+    "start_url": "./",
+    "scope": "./"
+  },
   "welcome": "<b>HWP·HWPX·PDF 뷰어</b>",
   "icons": "apps/hwp-viewer",
   "worker": "hwp-viewer",
-  "version": "v30",
-  "cache": "hwpview-v30",
+  "version": "v31",
+  "cache": "hwpview-v31",
   "prefix": "hwpview",
   "notices_title": "HWP 뷰어 (hwp-viewer)",
   "autofill": true
