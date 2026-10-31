@@ -5,6 +5,7 @@ import { parseHwp, parseHwpx } from 'kordoc';
 import { marked } from 'marked';
 import { hwpPages, hwpxPages } from './pages.js';
 import { IMG_RE, isImage, showImages, savePdf } from './images.js';
+import { initShare } from './share.js';
 import { isDocCfb, docHtml, renderDocx } from './wordfmt.js';
 import JSZip from '../../kordoc/node_modules/jszip/dist/jszip.min.js';
 const $ = s => document.querySelector(s);
@@ -286,7 +287,7 @@ addEventListener('DOMContentLoaded', async () => {
     dlg.onclick = e => { if (e.target === dlg) closeDlg(); };
   };
   // one place that decides what "back" means
-  const onBack = () => { if (window.__licOpen && window.__licOpen()) { window.__licClose(); return; }
+  const onBack = () => { if (window.__shareOpen && window.__shareOpen()) { window.__shareClose(); return; } if (window.__licOpen && window.__licOpen()) { window.__licClose(); return; }
     if (window.__helpOpen && window.__helpOpen()) { window.__helpClose(); return; }
 //#if AF
     { const a = document.getElementById('afdlg'); if (a && !a.hidden) { a.hidden = true; return; } }
@@ -335,6 +336,7 @@ addEventListener('DOMContentLoaded', async () => {
     const restore = () => { document.title = t; removeEventListener('afterprint', restore); };
     setTimeout(() => { document.title = nm; addEventListener('afterprint', restore); try { window.print(); } catch (e) { toast('이 브라우저에서는 인쇄를 열 수 없어요'); } setTimeout(restore, 60000); }, 1200);
   };
+  initShare(__SHARE_JSON__, $, toast);
   $('#save').onclick = saveHtml; $('#print').onclick = () => print();
   document.addEventListener('dragover', e => e.preventDefault());
   document.addEventListener('drop', e => { e.preventDefault(); e.dataTransfer.files.length && openFiles(e.dataTransfer.files); });

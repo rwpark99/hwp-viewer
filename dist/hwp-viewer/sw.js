@@ -1,4 +1,4 @@
-const V = 'hwpview-v31'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
+const V = 'hwpview-v32'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== 'hwpview-share').map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {

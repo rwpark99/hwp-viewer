@@ -9,9 +9,14 @@
   "welcome": "<b>HWP·HWPX·PDF 뷰어</b>",
   "icons": "apps/hwp-viewer",
   "worker": "hwp-viewer",
-  "version": "v31",
-  "cache": "hwpview-v31",
+  "version": "v32",
+  "cache": "hwpview-v32",
   "prefix": "hwpview",
   "notices_title": "HWP 뷰어 (hwp-viewer)",
-  "autofill": true
+  "autofill": true,
+  "share": {
+    "url": "https://hwp-viewer.rwpark-hwp.workers.dev/",
+    "title": "HWP 뷰어",
+    "desc": "휴대폰에서 한글(HWP·HWPX)·PDF·Word 문서와 그림을 바로 보는 앱이에요. 설치 없이 링크만 열면 돼요."
+  }
 }

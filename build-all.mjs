@@ -15,7 +15,7 @@ for (const a of apps) {
   } const D = `dist/${a}`;
   fs.rmSync(D, { recursive: true, force: true }); fs.mkdirSync(D, { recursive: true });
   const sub = s => s.split('__PREFIX__').join(C.prefix).split('__CACHEV__').join(C.cache).split('__NAME__').join(C.short_name)
-    .split('__WELCOME__').join(C.welcome).split('__APPV__').join(C.version).split('__NOTICES_TITLE__').join(C.notices_title);
+    .split('__WELCOME__').join(C.welcome).split('__APPV__').join(C.version).split('__NOTICES_TITLE__').join(C.notices_title).split('__SHARE_JSON__').join(JSON.stringify(C.share));
   // app.js: 기능 플래그로 자동 채우기 코드를 빌드 단계에서 넣거나 뺌
   const tmp = `src/.app.${a}.js`; fs.writeFileSync(tmp, sub(ifAF(fs.readFileSync('src/app.js', 'utf8'), C.autofill, true)));
   try { execFileSync('node', ['build.mjs', tmp, `${D}/app.js`], { stdio: 'inherit' }); } finally { fs.rmSync(tmp); }
