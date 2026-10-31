@@ -7,7 +7,7 @@
   "icons": "apps/simview",
   "worker": "simview",
   "version": "1.0",
-  "cache": "simview-v1.0.4",
+  "cache": "simview-v1.0.5",
   "prefix": "simview",
   "notices_title": "심뷰 (SimView)",
   "autofill": false

@@ -6,8 +6,8 @@
   "welcome": "<b>HWP·HWPX·PDF 뷰어</b>",
   "icons": "apps/hwp-viewer",
   "worker": "hwp-viewer",
-  "version": "v29",
-  "cache": "hwpview-v29",
+  "version": "v30",
+  "cache": "hwpview-v30",
   "prefix": "hwpview",
   "notices_title": "HWP 뷰어 (hwp-viewer)",
   "autofill": true

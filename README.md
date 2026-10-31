@@ -24,4 +24,4 @@ node build-all.mjs simview      # 심뷰만
 - `apps/<앱>/` 아이콘.
 
 ## 라이선스
-MIT (`LICENSE`). 사용한 오픈소스 목록과 전문은 `src/THIRD_PARTY_NOTICES.txt` (앱 안 "오픈소스 라이선스"에서도 볼 수 있음).
+MIT (`LICENSE`, © 2026 RW PARK · rwpark@mail.grokbot.com). 사용한 오픈소스 목록과 전문은 `src/THIRD_PARTY_NOTICES.txt` (앱 안 "오픈소스 라이선스"에서도 볼 수 있음).

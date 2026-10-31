@@ -1,3 +1,5 @@
+© 2026 RW PARK · rwpark@mail.grokbot.com
+
 심뷰 (SimView) — Third-party software notices
 
 This app bundles the following open-source software. Each is used under the license shown; full texts follow.
