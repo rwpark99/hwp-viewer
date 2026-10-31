@@ -14,6 +14,7 @@ npm install
 node build-all.mjs all          # 둘 다
 node build-all.mjs hwp-viewer   # HWP 뷰어만
 node build-all.mjs simview      # 심뷰만
+node build-all.mjs simview --release   # 배포용: 버전 자동 올림 (심뷰 1.0→1.1, HWP 뷰어 v30→v31)
 ```
 
 결과: `dist/<앱>/` (정적 파일) 과 `dist/<앱>.worker.js` (Cloudflare Worker 한 파일).

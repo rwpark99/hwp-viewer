@@ -7,7 +7,12 @@ const ifAF = (s, on, js) => js
   ? s.replace(/\/\/#if AF\n([\s\S]*?)\/\/#endif\n/g, (m, b) => on ? b : '')
   : s.replace(/<!--#if AF-->\n?([\s\S]*?)<!--#endif-->\n?/g, (m, b) => on ? b : '');
 for (const a of apps) {
-  const C = JSON.parse(fs.readFileSync(`apps/${a}.json`, 'utf8')); const D = `dist/${a}`;
+  let C = JSON.parse(fs.readFileSync(`apps/${a}.json`, 'utf8'));
+  if (process.argv.includes('--release')) { // bump display version + cache for a new release
+    if (/^v\d+$/.test(C.version)) { C.version = 'v' + (+C.version.slice(1) + 1); C.cache = `${C.prefix}-${C.version}`; }
+    else { const [M, m] = C.version.split('.').map(Number); C.version = `${M}.${m + 1}`; C.cache = `${C.prefix}-v${C.version}.0`; }
+    fs.writeFileSync(`apps/${a}.json`, JSON.stringify(C, null, 2) + '\n');
+  } const D = `dist/${a}`;
   fs.rmSync(D, { recursive: true, force: true }); fs.mkdirSync(D, { recursive: true });
   const sub = s => s.split('__PREFIX__').join(C.prefix).split('__CACHEV__').join(C.cache).split('__NAME__').join(C.short_name)
     .split('__WELCOME__').join(C.welcome).split('__APPV__').join(C.version).split('__NOTICES_TITLE__').join(C.notices_title);

@@ -2,12 +2,16 @@
   "app": "simview",
   "name": "심뷰",
   "short_name": "심뷰",
-  "manifest": { "id": "/simview", "start_url": "/", "scope": "/" },
+  "manifest": {
+    "id": "/simview",
+    "start_url": "/",
+    "scope": "/"
+  },
   "welcome": "<b>심뷰</b><br>HWP·HWPX·PDF 뷰어",
   "icons": "apps/simview",
   "worker": "simview",
-  "version": "1.0",
-  "cache": "simview-v1.0.5",
+  "version": "1.1",
+  "cache": "simview-v1.1.0",
   "prefix": "simview",
   "notices_title": "심뷰 (SimView)",
   "autofill": false
