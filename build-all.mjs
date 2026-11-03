@@ -28,8 +28,10 @@ for (const a of apps) {
   fs.writeFileSync(`${D}/version.json`, JSON.stringify({ version: C.version }));
   for (const f of ['pdf.min.mjs', 'pdf.worker.min.mjs']) fs.copyFileSync('src/' + f, `${D}/${f}`);
   for (const f of ['icon-192.png', 'icon-512.png']) fs.copyFileSync(`${C.icons}/${f}`, `${D}/${f}`);
+  fs.mkdirSync(`${D}/ficons`); const FI = fs.readdirSync('src/ficons').filter(f => f.endsWith('.png')); for (const f of FI) fs.copyFileSync('src/ficons/' + f, `${D}/ficons/${f}`);
   // Cloudflare Worker 코드 (파일을 gzip 으로 담아 1개 스크립트로)
   const files = { '/index.html': 'text/html; charset=utf-8', '/app.js': 'application/javascript; charset=utf-8', '/sw.js': 'application/javascript; charset=utf-8', '/manifest.webmanifest': 'application/manifest+json', '/icon-192.png': 'image/png', '/icon-512.png': 'image/png', '/version.json': 'application/json', '/THIRD_PARTY_NOTICES.txt': 'text/plain; charset=utf-8', '/pdf.min.mjs': 'text/javascript; charset=utf-8', '/pdf.worker.min.mjs': 'text/javascript; charset=utf-8' };
+  for (const f of FI) files['/ficons/' + f] = 'image/png';
   const F = Object.fromEntries(Object.entries(files).map(([p, ct]) => [p, [ct, zlib.gzipSync(fs.readFileSync(D + p), { level: 9 }).toString('base64')]]));
   const worker = `const F=${JSON.stringify(F)};const C={};
 export default{async fetch(req){const u=new URL(req.url);let p=u.pathname;if(p==='/'||p==='')p='/index.html';
