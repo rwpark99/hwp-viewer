@@ -1,4 +1,4 @@
-const V = 'hwpview-v33'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
+const V = 'hwpview-v34'; const ASSETS = ['./', './index.html', './app.js', './manifest.webmanifest', './icon-192.png', './icon-512.png', './pdf.min.mjs', './pdf.worker.min.mjs'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(V).then(c => c.addAll(ASSETS.map(u => new Request(u, { cache: 'reload' }))))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== V && k !== 'hwpview-share').map(k => caches.delete(k))))); self.clients.claim(); });
 self.addEventListener('fetch', e => {
@@ -8,6 +8,7 @@ self.addEventListener('fetch', e => {
       for (let i = 0; i < fs.length && i < 50; i++) { const f = fs[i]; await c.put(i ? '/shared-file-' + i : '/shared-file', new Response(f, { headers: { 'x-name': encodeURIComponent(f.name || 'shared.hwp'), 'x-type': f.type || '' } })); }
       return Response.redirect('./?shared=1', 303); })()); return;
   }
+  if (u.origin !== self.location.origin) return; // 외부 요청(방문 통계 등)은 캐시하지 않고 그대로 통과
   if (u.pathname.endsWith('/version.json')) { e.respondWith(fetch(e.request, { cache: 'no-store' })); return; }
   if (e.request.method !== 'GET') return;
   e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(r => r || fetch(e.request)));

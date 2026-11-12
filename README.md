@@ -26,3 +26,6 @@ node build-all.mjs simview --release   # 배포용: 버전 자동 올림 (심뷰
 
 ## 라이선스
 MIT (`LICENSE`, © 2026 RW PARK · rwpark@mail.grokbot.com). 사용한 오픈소스 목록과 전문은 `src/THIRD_PARTY_NOTICES.txt` (앱 안 "오픈소스 라이선스"에서도 볼 수 있음).
+
+## 방문 수 통계
+Cloudflare Web Analytics(무료)의 beacon 스크립트를 `index.html`에 넣습니다 (앱 설정 `rum_token`, 앱마다 따로). 보내는 것은 페이지 주소와 로딩 시간뿐이고, 파일 이름·내용·개인정보는 보내지 않습니다. `spa: false`로 화면 전환은 따로 세지 않습니다. 서비스 워커는 외부 요청을 캐시하지 않으므로 오프라인에서는 통계만 빠지고 앱은 그대로 동작합니다. 통계 보기: Cloudflare 대시보드 → Analytics & Logs → Web Analytics.

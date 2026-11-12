@@ -20,7 +20,7 @@ for (const a of apps) {
   const tmp = `src/.app.${a}.js`; fs.writeFileSync(tmp, sub(ifAF(fs.readFileSync('src/app.js', 'utf8'), C.autofill, true)));
   try { execFileSync('node', ['build.mjs', tmp, `${D}/app.js`], { stdio: 'inherit' }); } finally { fs.rmSync(tmp); }
   const html = sub(ifAF(fs.readFileSync('src/index.html', 'utf8'), C.autofill, false));
-  fs.writeFileSync(`${D}/index.html`, html.replace('<!--PWA-->', '<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">').replace('<!--SCRIPT-->', `<script src="app.js?v=${C.version}"></script>`));
+  fs.writeFileSync(`${D}/index.html`, html.replace('<!--PWA-->', '<link rel="manifest" href="manifest.webmanifest"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">').replace('<!--SCRIPT-->', `<script src="app.js?v=${C.version}"></script>`).replace('<!--RUM-->', C.rum_token ? `<!-- 방문 수 통계 (Cloudflare Web Analytics, 무료): 페이지 방문만 셈. 파일 이름·내용·개인정보는 보내지 않음. 실패해도 앱 동작과 무관 -->\n<script defer src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='${JSON.stringify({ token: C.rum_token, spa: false })}'></script>` : ''));
   fs.writeFileSync(`${D}/sw.js`, sub(fs.readFileSync('src/sw.js', 'utf8')));
   const mh = JSON.stringify({ ...(C.manifest.id ? { id: C.manifest.id } : {}), name: C.name, short_name: C.short_name, start_url: C.manifest.start_url, scope: C.manifest.scope }).slice(1, -1);
   fs.writeFileSync(`${D}/manifest.webmanifest`, fs.readFileSync('src/manifest.webmanifest', 'utf8').replace('__MANIFEST_HEAD__', mh));

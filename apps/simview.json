@@ -10,8 +10,8 @@
   "welcome": "<b>심뷰</b><br>HWP·HWPX·PDF 뷰어",
   "icons": "apps/simview",
   "worker": "simview",
-  "version": "1.4",
-  "cache": "simview-v1.4.0",
+  "version": "1.5",
+  "cache": "simview-v1.5.0",
   "prefix": "simview",
   "notices_title": "심뷰 (SimView)",
   "autofill": false,
@@ -19,5 +19,6 @@
     "url": "https://simview.rwpark-hwp.workers.dev/",
     "title": "심뷰",
     "desc": "휴대폰에서 한글(HWP·HWPX)·PDF·Word 문서와 그림을 바로 보는 앱이에요. 설치 없이 링크만 열면 돼요."
-  }
+  },
+  "rum_token": "43e7915ae95c4c7aa0e542dc9010ba19"
 }
